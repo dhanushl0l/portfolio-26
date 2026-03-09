@@ -336,19 +336,64 @@ footer a:hover { color: var(--amber); }
 
 /* RESPONSIVE */
 @media (max-width:900px) {
-  .hero-inner { grid-template-columns: 1fr; padding: 0 28px; }
+  /* NAV */
+  nav { padding: 12px 20px; }
+  nav ul { gap: 14px; }
+  nav a { font-size: 10px; letter-spacing: 0.06em; }
+  .nav-sig { font-size: 11px; }
+
+  /* HERO */
+  #hero { min-height: auto; padding: 88px 0 40px; }
+  .hero-inner {
+    grid-template-columns: 1fr; padding: 0 20px;
+    gap: 0;
+  }
   .hero-right { display: none; }
+  .hero-eyebrow {
+    font-size: 10px; gap: 8px; margin-bottom: 18px;
+    overflow: visible; flex-wrap: wrap;
+  }
+  .hero-eyebrow::before { width: 20px; }
+  .hero-name { font-size: clamp(34px, 10vw, 52px); }
+  .hero-desc { font-size: 14px; margin-top: 16px; line-height: 1.65; }
+  .hero-setup { margin-top: 20px; gap: 6px; }
+  .setup-pill { font-size: 10px; padding: 3px 8px; }
+  .hero-actions { margin-top: 24px; gap: 8px; }
+  .btn { padding: 8px 14px; font-size: 11px; }
+
+  /* MOBILE TERMINAL */
   .mobile-term-section { display: block; }
-  .sw { padding: 72px 28px; }
+  .iterm-wrap { padding: 0 20px 56px; }
+  .iterm-body { height: 300px; font-size: 12px; padding: 14px 16px; }
+  .iterm-input { font-size: 12px; }
+  .iterm-prompt-str { font-size: 12px; }
+
+  /* SECTIONS */
+  .sw { padding: 56px 20px; }
+  .s-title { margin-bottom: 32px; }
   .about-grid, .now-grid { grid-template-columns: 1fr; }
-  .divwrap { padding: 0 28px; }
-  .iterm-wrap { padding: 0 28px 72px; }
-  nav { padding: 14px 28px; }
-  nav ul { gap: 16px; }
-  nav a { font-size: 10px; }
-  footer { flex-direction: column; gap: 6px; text-align: center; padding: 20px 28px; }
-  .contact-box { padding: 40px 28px; }
-  .iterm-body { height: 320px; }
+  .divwrap { padding: 0 20px; }
+
+  /* SKILLS */
+  .sk-outer { grid-template-columns: 1fr 1fr; }
+
+  /* PROJECTS */
+  .proj-grid { grid-template-columns: 1fr; }
+
+  /* CONTACT */
+  .contact-box { padding: 36px 20px; }
+  .contact-links { flex-direction: column; align-items: center; }
+  .contact-links .btn { width: 100%; justify-content: center; max-width: 280px; }
+
+  /* FOOTER */
+  footer { flex-direction: column; gap: 6px; text-align: center; padding: 18px 20px; }
+}
+
+@media (max-width: 480px) {
+  .hero-name { font-size: clamp(30px, 9vw, 44px); }
+  .sk-outer { grid-template-columns: 1fr; }
+  nav ul { gap: 10px; }
+  nav a { font-size: 9px; }
 }
 </style>
 </head>
@@ -406,7 +451,7 @@ footer a:hover { color: var(--amber); }
 <!-- MOBILE INTERACTIVE TERMINAL -->
 <div class="mobile-term-section">
   <div class="iterm-wrap">
-    <p class="iterm-hint">Type <span>help</span> to explore — try about, skills, projects, binary, snake</p>
+    <p class="iterm-hint">Tap terminal then type <span>help</span> &nbsp;·&nbsp; try <span>snake</span>, <span>about</span>, <span>binary</span></p>
     <div class="iterm" id="mobileIterm">
       <div class="iterm-bar">
         <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
@@ -1006,8 +1051,7 @@ function makeTerminal(bodyId, doAutoplay) {
       }
     });
 
-    if (!doAutoplay) setTimeout(function() { inputEl.focus(); }, 200);
-    if (doAutoplay) setTimeout(function() { inputEl.focus(); }, 5000);
+    // No auto-focus: avoid mobile keyboard popup
   }
 
   function launchSnake() {
