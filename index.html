@@ -337,13 +337,16 @@ footer a:hover { color: var(--amber); }
 /* RESPONSIVE */
 @media (max-width:900px) {
   /* NAV */
-  nav { padding: 12px 20px; }
-  nav ul { gap: 14px; }
-  nav a { font-size: 10px; letter-spacing: 0.06em; }
-  .nav-sig { font-size: 11px; }
+  nav { padding: 0 16px; height: 48px; }
+  .nav-sig { font-size: 11px; white-space: nowrap; }
+  .nav-sig-host { display: none; }
+  nav ul { gap: 0; }
+  nav ul li { flex-shrink: 0; }
+  nav a { font-size: 10.5px; letter-spacing: 0.04em; padding: 4px 8px; display: block; }
+  .nav-hide-sm { display: none; }
 
   /* HERO */
-  #hero { min-height: auto; padding: 88px 0 40px; }
+  #hero { min-height: auto; padding: 72px 0 40px; }
   .hero-inner {
     grid-template-columns: 1fr; padding: 0 20px;
     gap: 0;
@@ -392,18 +395,22 @@ footer a:hover { color: var(--amber); }
 @media (max-width: 480px) {
   .hero-name { font-size: clamp(30px, 9vw, 44px); }
   .sk-outer { grid-template-columns: 1fr; }
-  nav ul { gap: 10px; }
-  nav a { font-size: 9px; }
+  /* iPhone SE: 375px — make sure nav never overflows */
+  nav a { font-size: 10px; padding: 4px 6px; }
+}
+
+@media (max-width: 360px) {
+  nav a { font-size: 9.5px; padding: 4px 5px; }
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-sig"><span style="color:var(--green)">dhanush</span><em>@hyprland</em> <em style="color:var(--muted)">~</em> <em style="color:var(--amber)">$</em></div>
+  <div class="nav-sig"><span style="color:var(--green)">dhanush</span><em class="nav-sig-host">@hyprland</em></div>
   <ul>
     <li><a href="#about">about</a></li>
-    <li><a href="#skills">skills</a></li>
+    <li class="nav-hide-sm"><a href="#skills">skills</a></li>
     <li><a href="#experience">work</a></li>
     <li><a href="#projects">projects</a></li>
     <li><a href="#contact">contact</a></li>
