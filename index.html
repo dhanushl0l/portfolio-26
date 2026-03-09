@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>dhanush — systems engineer & rust dev</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -55,6 +55,93 @@ nav {
 nav ul { list-style: none; display: flex; gap: 28px; }
 nav a { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-decoration: none; transition: color 0.2s; }
 nav a:hover { color: var(--amber); }
+
+/* HAMBURGER */
+.nav-burger {
+  display: none;
+  flex-direction: column; justify-content: center; align-items: center;
+  width: 36px; height: 36px; cursor: pointer; gap: 5px;
+  background: none; border: none; padding: 0; z-index: 300; position: relative;
+}
+.nav-burger span {
+  display: block; width: 20px; height: 1.5px;
+  background: var(--amber); border-radius: 2px;
+  transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), opacity 0.25s ease, width 0.3s ease;
+  transform-origin: center;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* FULLSCREEN MENU OVERLAY */
+.nav-overlay {
+  position: fixed; inset: 0; z-index: 250;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  padding: 80px 40px 60px;
+  /* bottom padding accounts for safe area + bottom nav */
+  padding-bottom: max(60px, calc(80px + env(safe-area-inset-bottom, 0px)));
+  pointer-events: none;
+  clip-path: circle(0% at calc(100% - 34px) 30px);
+  transition: clip-path 0.55s cubic-bezier(0.77,0,0.175,1);
+}
+.nav-overlay.open {
+  pointer-events: all;
+  clip-path: circle(150% at calc(100% - 34px) 30px);
+}
+.nav-overlay-sig {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--muted); margin-bottom: 48px;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s;
+}
+.nav-overlay.open .nav-overlay-sig { opacity: 1; transform: none; }
+.nav-overlay-sig span { color: var(--green); }
+.nav-overlay-sig em { color: var(--amber); font-style: normal; }
+
+.nav-overlay ul {
+  list-style: none; display: flex; flex-direction: column; gap: 4px; width: 100%;
+}
+.nav-overlay ul li {
+  opacity: 0; transform: translateX(-24px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.nav-overlay.open ul li:nth-child(1) { transition-delay: 0.18s; opacity:1; transform:none; }
+.nav-overlay.open ul li:nth-child(2) { transition-delay: 0.24s; opacity:1; transform:none; }
+.nav-overlay.open ul li:nth-child(3) { transition-delay: 0.30s; opacity:1; transform:none; }
+.nav-overlay.open ul li:nth-child(4) { transition-delay: 0.36s; opacity:1; transform:none; }
+.nav-overlay.open ul li:nth-child(5) { transition-delay: 0.42s; opacity:1; transform:none; }
+
+.nav-overlay ul a {
+  display: flex; align-items: center; gap: 16px;
+  font-family: var(--mono); font-size: clamp(28px, 8vw, 42px);
+  font-weight: 700; letter-spacing: -0.02em;
+  color: var(--muted); text-decoration: none;
+  padding: 10px 0; line-height: 1;
+  transition: color 0.2s;
+  border-bottom: 1px solid var(--border2);
+}
+.nav-overlay ul a .menu-num {
+  font-size: 11px; color: var(--amber-dim); letter-spacing: 0.1em;
+  font-weight: 400; width: 28px; flex-shrink: 0;
+  transition: color 0.2s;
+}
+.nav-overlay ul a:hover { color: #fff; }
+.nav-overlay ul a:hover .menu-num { color: var(--amber); }
+
+.nav-overlay-footer {
+  margin-top: 48px;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.3s ease 0.5s, transform 0.3s ease 0.5s;
+  display: flex; gap: 20px;
+}
+.nav-overlay.open .nav-overlay-footer { opacity: 1; transform: none; }
+.nav-overlay-footer a {
+  font-size: 11px; color: var(--muted); text-decoration: none;
+  letter-spacing: 0.08em; transition: color 0.2s;
+}
+.nav-overlay-footer a:hover { color: var(--amber); }
 
 /* HERO */
 #hero {
@@ -336,17 +423,35 @@ footer a:hover { color: var(--amber); }
 
 /* RESPONSIVE */
 @media (max-width:900px) {
-  /* NAV */
-  nav { padding: 0 16px; height: 48px; }
+  /* NAV — bottom bar on mobile */
+  nav {
+    top: auto;
+    bottom: 0;
+    border-bottom: none;
+    border-top: 1px solid var(--border);
+    padding: 0 8px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    -webkit-padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: constant(safe-area-inset-bottom);
+  }
   .nav-sig { font-size: 11px; white-space: nowrap; }
-  .nav-sig-host { display: none; }
-  nav ul { gap: 0; }
-  nav ul li { flex-shrink: 0; }
-  nav a { font-size: 10.5px; letter-spacing: 0.04em; padding: 4px 8px; display: block; }
-  .nav-hide-sm { display: none; }
+  nav ul { display: none; }
+  .nav-burger { display: flex; }
+
+  /* Push content above bottom nav */
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+
+  /* Overlay origin: from bottom-right burger */
+  .nav-overlay {
+    clip-path: circle(0% at calc(100% - 34px) calc(100% - 34px));
+  }
+  .nav-overlay.open {
+    clip-path: circle(150% at calc(100% - 34px) calc(100% - 34px));
+  }
 
   /* HERO */
-  #hero { min-height: auto; padding: 72px 0 40px; }
+  #hero { min-height: auto; padding: 40px 0 40px; }
   .hero-inner {
     grid-template-columns: 1fr; padding: 0 20px;
     gap: 0;
@@ -389,7 +494,11 @@ footer a:hover { color: var(--amber); }
   .contact-links .btn { width: 100%; justify-content: center; max-width: 280px; }
 
   /* FOOTER */
-  footer { flex-direction: column; gap: 6px; text-align: center; padding: 18px 20px; }
+  footer {
+    flex-direction: column; gap: 6px; text-align: center;
+    padding: 18px 20px;
+    margin-bottom: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -407,15 +516,35 @@ footer a:hover { color: var(--amber); }
 <body>
 
 <nav>
-  <div class="nav-sig"><span style="color:var(--green)">dhanush</span><em class="nav-sig-host">@hyprland</em></div>
+  <div class="nav-sig"><span style="color:var(--green)">dhanush</span><em>@arch</em></div>
   <ul>
     <li><a href="#about">about</a></li>
-    <li class="nav-hide-sm"><a href="#skills">skills</a></li>
+    <li><a href="#skills">skills</a></li>
     <li><a href="#experience">work</a></li>
     <li><a href="#projects">projects</a></li>
     <li><a href="#contact">contact</a></li>
   </ul>
+  <button class="nav-burger" id="navBurger" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- FULLSCREEN NAV OVERLAY -->
+<div class="nav-overlay" id="navOverlay">
+  <div class="nav-overlay-sig"><span>dhanush</span>@arch <em>~</em></div>
+  <ul>
+    <li><a href="#about"    class="overlay-link"><span class="menu-num">01</span>about</a></li>
+    <li><a href="#skills"   class="overlay-link"><span class="menu-num">02</span>skills</a></li>
+    <li><a href="#experience" class="overlay-link"><span class="menu-num">03</span>work</a></li>
+    <li><a href="#projects" class="overlay-link"><span class="menu-num">04</span>projects</a></li>
+    <li><a href="#contact"  class="overlay-link"><span class="menu-num">05</span>contact</a></li>
+  </ul>
+  <div class="nav-overlay-footer">
+    <a href="https://github.com/dhanushl0l" target="_blank">github</a>
+    <a href="mailto:dhanush@tutanota.de">email</a>
+    <a href="https://dhanu.cloud" target="_blank">site</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -1155,6 +1284,45 @@ function makeTerminal(bodyId, doAutoplay) {
 
 makeTerminal('dtermBody', true);
 makeTerminal('mtermBody', false);
+
+// HAMBURGER MENU
+var burger  = document.getElementById('navBurger');
+var overlay = document.getElementById('navOverlay');
+var isOpen  = false;
+
+function openMenu() {
+  isOpen = true;
+  burger.classList.add('open');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  isOpen = false;
+  burger.classList.remove('open');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+burger.addEventListener('click', function() {
+  if (isOpen) closeMenu(); else openMenu();
+});
+
+// Close on link click
+document.querySelectorAll('.overlay-link').forEach(function(link) {
+  link.addEventListener('click', function() {
+    closeMenu();
+  });
+});
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && isOpen) closeMenu();
+});
+
+// Close on tap outside menu content
+overlay.addEventListener('click', function(e) {
+  if (e.target === overlay) closeMenu();
+});
 
 // SCROLL REVEAL
 var obs = new IntersectionObserver(function(es) {
